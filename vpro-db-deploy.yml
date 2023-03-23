@@ -29,6 +29,14 @@ spec:
                 secretKeyRef:
                   name: app-secret #iz app-secret
                   key: db-pass
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "250m"
+            requests:
+              memory: 256Mi
+              cpu: "80m"
+
       volumes:
         - name: mysql-volume
           # directory location on hoast
