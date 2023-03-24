@@ -14,31 +14,31 @@ spec:
       labels:
         app: vprodb
     spec:
-      containers:
-        - name: vprodb
-          image: vprofile/vprofiledb:V1
-          args:
-            - "--ignore-db-dir=lost+found"
-          ports:
-            - name: vprodb-port
-              containerPort: 3306
+      initContainers:
+        - image: busybox
+          name: mysql-volume-cleaner
+          args: [/bin/sh, -c, 'rm -rf /var/lib/mysql/lost+found || true']
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql-volume
+      containers:
+        - name: vprodb
+          #image: vprofile/vprofiledb:V1
+          image: stojc69/my-vprodb:latest
+            #args:
+          #- "--ignore-db-dir=lost+found"
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-volume
+          ports:
+            - name: vprodb-port
+              containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: app-secret #iz app-secret
                   key: db-pass
-          resources:
-            limits:
-              memory: 512Mi
-              cpu: "250m"
-            requests:
-              memory: 256Mi
-              cpu: "80m"
-
       volumes:
         - name: mysql-volume
           # directory location on hoast
