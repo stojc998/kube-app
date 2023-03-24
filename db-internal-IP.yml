@@ -9,3 +9,4 @@ spec:
       protocol: TCP
   selector:
     app: vprodb #same name as label in vpro-db-deploy
+  type: ClusterIP
